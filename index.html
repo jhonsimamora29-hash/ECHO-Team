@@ -1,0 +1,1985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<meta name="robots" content="noindex, nofollow">
+<title>ECHO Team — Strategic Operations Intelligence</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root{
+  --bg:#F6F8FA;
+  --surface:#FFFFFF;
+  --column:#EFF2F6;
+  --ink:#1C212B;
+  --ink-soft:#5B6573;
+  --ink-faint:#8A93A0;
+  --line:#E3E7ED;
+  --line-strong:#D0D6DF;
+
+  --cyan:#38D9FF;
+  --cyan-tint:#E4F8FD;
+  --cyan-deep:#0A7896;
+  --emerald:#38D67A;
+  --emerald-tint:#E3F7EB;
+  --emerald-deep:#1A7F45;
+  --amber:#F4C542;
+  --amber-tint:#FDF3D6;
+  --amber-deep:#8A6500;
+  --red:#FF5A5A;
+  --red-tint:#FDE8E8;
+  --red-deep:#C73B3B;
+  --violet:#8B72E0;
+  --violet-tint:#EEE9FB;
+  --violet-deep:#6B52C4;
+  --slate:#8A93A0;
+  --slate-tint:#EAEEF3;
+
+  --shadow-hover:0 2px 10px rgba(28,33,43,0.07);
+  --shadow-panel:-12px 0 32px rgba(28,33,43,0.12);
+}
+
+*{ box-sizing:border-box; }
+html,body{ margin:0; padding:0; }
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  min-height:100vh;
+  position:relative;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3{ margin:0; font-weight:600; }
+.num{ font-variant-numeric:tabular-nums; }
+.muted{ color:var(--ink-faint); }
+
+button, input, textarea, select{ font-family:inherit; }
+:focus-visible{ outline:2px solid var(--cyan-deep); outline-offset:2px; }
+
+@media (prefers-reduced-motion: reduce){
+  *{ transition:none !important; animation:none !important; }
+}
+
+/* ---------- BACKGROUND ILLUSTRATION (faint radar rings) ---------- */
+.bg-rings{
+  position:fixed; top:-230px; right:-230px; width:620px; height:620px;
+  pointer-events:none; z-index:0;
+}
+
+/* ---------- LAYOUT ---------- */
+.page{ max-width:1180px; margin:0 auto; padding:28px 24px 64px; position:relative; z-index:1; }
+
+.topbar{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:16px; flex-wrap:wrap; margin-bottom:22px;
+}
+.brand{ display:flex; align-items:center; gap:12px; }
+.brand-mark{
+  width:42px; height:42px; border-radius:10px;
+  background:var(--surface); border:1px solid var(--line);
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.brand-mark svg{ width:24px; height:24px; }
+.brand h1{ font-size:19px; font-weight:700; letter-spacing:0.08em; }
+.brand .tagline{ margin:2px 0 0; font-size:12px; color:var(--ink-soft); }
+.brand .greeting{ margin:2px 0 0; font-size:12px; color:var(--cyan-deep); }
+
+.topbar-right{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.readout{
+  font-size:12.5px; color:var(--ink-soft);
+  background:var(--surface); border:1px solid var(--line);
+  border-radius:999px; padding:7px 14px;
+  display:flex; align-items:center; gap:8px;
+}
+.readout .sep{ color:var(--line-strong); }
+.readout #urgentCount.has-urgent{ color:var(--red-deep); font-weight:600; }
+
+.btn-primary{
+  background:var(--ink); color:#fff; border:none;
+  padding:9px 16px; border-radius:8px; font-size:13px; font-weight:600;
+  cursor:pointer; transition:background .12s ease;
+}
+.btn-primary:hover{ background:#000; }
+
+.icon-btn{
+  background:var(--surface); border:1px solid var(--line); color:var(--ink-soft);
+  cursor:pointer; width:34px; height:34px; border-radius:8px;
+  display:inline-flex; align-items:center; justify-content:center; font-size:14px;
+  position:relative; transition:background .12s ease, color .12s ease;
+}
+.icon-btn:hover{ background:var(--slate-tint); color:var(--ink); }
+.icon-btn.has-archive::after{
+  content:attr(data-count); position:absolute; top:-6px; right:-6px;
+  background:var(--violet-deep); color:#fff; font-size:9.5px; font-weight:700;
+  border-radius:999px; min-width:16px; height:16px; padding:0 4px;
+  display:flex; align-items:center; justify-content:center;
+}
+
+/* ---------- PROJECT TABS ---------- */
+.project-tabs{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; }
+.project-tab{
+  background:transparent; border:1px solid var(--line);
+  border-radius:999px; padding:6px 13px; font-size:12.5px; font-weight:500;
+  color:var(--ink-soft); cursor:pointer; transition:background .12s ease, border-color .12s ease;
+}
+.project-tab:hover{ background:var(--surface); border-color:var(--line-strong); }
+.project-tab.active{ background:var(--ink); border-color:var(--ink); color:#fff; font-weight:600; }
+.project-tab .ptab-count{ opacity:.65; margin-left:5px; font-variant-numeric:tabular-nums; }
+.project-tab .ptab-x{ opacity:.5; margin-left:8px; font-size:10px; padding:1px 3px; border-radius:4px; }
+.project-tab .ptab-x:hover{ opacity:1; background:rgba(199,59,59,0.18); }
+
+/* ---------- FILTER BAR ---------- */
+.filterbar{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:10px; }
+.seg{ display:inline-flex; background:var(--slate-tint); border-radius:8px; padding:3px; }
+.seg button{
+  border:none; background:transparent; padding:6px 14px; font-size:12.5px; font-weight:600;
+  color:var(--ink-soft); border-radius:6px; cursor:pointer;
+}
+.seg button.active{ background:var(--surface); color:var(--ink); box-shadow:0 1px 2px rgba(28,33,43,0.1); }
+.range-nav{ display:inline-flex; align-items:center; gap:6px; }
+.rn-btn{
+  width:28px; height:28px; border-radius:7px; border:1px solid var(--line);
+  background:var(--surface); color:var(--ink-soft); font-size:16px; line-height:1; cursor:pointer;
+}
+.rn-btn:hover{ background:var(--slate-tint); color:var(--ink); }
+.range-label{ min-width:150px; text-align:center; font-size:13px; font-weight:600; }
+.today-btn{
+  border:1px solid var(--line); background:transparent; border-radius:7px;
+  padding:5px 11px; font-size:12px; font-weight:600; color:var(--cyan-deep); cursor:pointer;
+}
+.today-btn:hover{ background:var(--cyan-tint); }
+.by{ margin-left:auto; display:flex; align-items:center; gap:8px; font-size:12px; color:var(--ink-soft); }
+.by select{
+  border:1px solid var(--line); border-radius:7px; background:var(--surface);
+  padding:5px 8px; font-size:12px; color:var(--ink);
+}
+.filter-hint{ font-size:12px; color:var(--ink-soft); margin:0 0 12px; }
+.link-btn{
+  background:none; border:none; padding:0; font-size:12px; font-weight:600;
+  color:var(--cyan-deep); cursor:pointer; text-decoration:underline;
+}
+
+.legend{
+  display:flex; gap:16px; flex-wrap:wrap;
+  font-size:11.5px; color:var(--ink-faint); margin:0 0 16px; padding-left:2px;
+}
+.legend-item{ display:flex; align-items:center; gap:6px; }
+.dot{ width:7px; height:7px; border-radius:50%; display:inline-block; }
+.dot-danger{ background:var(--red); }
+.dot-warn{ background:var(--amber); }
+.dot-stale{ background:var(--violet); }
+
+/* ---------- BOARD ---------- */
+.board{ display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; align-items:start; }
+.column{
+  background:var(--column); border-radius:12px; min-height:220px;
+  display:flex; flex-direction:column;
+}
+.column-head{ display:flex; align-items:center; justify-content:space-between; padding:14px 14px 8px; }
+.column-head h2{
+  font-size:12px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase;
+  color:var(--ink-soft); display:flex; align-items:center; gap:8px;
+}
+.col-dot{ width:8px; height:8px; border-radius:50%; display:inline-block; }
+.column[data-status="todo"] .col-dot{ background:var(--slate); }
+.column[data-status="progress"] .col-dot{ background:var(--cyan); }
+.column[data-status="done"] .col-dot{ background:var(--emerald); }
+.count{
+  font-size:11px; color:var(--ink-soft); background:var(--surface);
+  border-radius:999px; padding:1px 8px; font-variant-numeric:tabular-nums;
+}
+.column-body{ padding:4px 8px 12px; display:flex; flex-direction:column; gap:8px; flex:1; }
+.empty-hint{
+  color:var(--ink-faint); font-size:12px; text-align:center;
+  padding:26px 10px; display:flex; flex-direction:column; align-items:center; gap:10px;
+}
+.empty-hint svg{ opacity:0.7; }
+
+/* ---------- CARD ---------- */
+.card{
+  position:relative; background:var(--surface); border:1px solid var(--line);
+  border-radius:9px; padding:12px 13px 10px 15px; cursor:pointer;
+  transition:border-color .12s ease, box-shadow .12s ease;
+}
+.card::before{
+  content:''; position:absolute; left:0; top:11px; bottom:11px; width:3px;
+  border-radius:0 3px 3px 0; background:transparent;
+}
+.card.level-none::before{ background:var(--emerald); }
+.card.level-warn::before{ background:var(--amber); }
+.card.level-danger::before{ background:var(--red); }
+.card.level-stale::before{ background:var(--violet); }
+.card:hover{ border-color:var(--line-strong); box-shadow:var(--shadow-hover); }
+
+.card-project{
+  display:inline-block; font-size:10.5px; font-weight:600; color:var(--cyan-deep);
+  background:var(--cyan-tint); border-radius:999px; padding:1px 8px; margin-bottom:7px;
+}
+.card-title{ font-size:13.5px; font-weight:600; line-height:1.35; margin-bottom:7px; }
+.card-row{
+  display:flex; align-items:center; gap:7px; font-size:12px; color:var(--ink-soft);
+  margin-bottom:5px; min-height:20px;
+}
+.card-row svg{ flex-shrink:0; color:var(--ink-faint); }
+.card-row.report{ color:var(--emerald-deep); }
+.card-row.report svg{ color:var(--emerald-deep); }
+.card-row .rep-text{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.avatars{ display:inline-flex; align-items:center; flex-shrink:0; }
+.avatar{
+  width:20px; height:20px; border-radius:50%; font-size:9px; font-weight:700; color:var(--ink);
+  display:inline-flex; align-items:center; justify-content:center;
+  border:2px solid var(--surface); margin-left:-6px;
+}
+.avatars .avatar:first-child{ margin-left:0; }
+.pic-names{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+.card-footer{ display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin:8px 0 6px; }
+.prio{ display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:600; color:var(--ink-soft); }
+.prio i{ width:7px; height:7px; border-radius:50%; display:inline-block; }
+.prio-high i{ background:var(--red); }
+.prio-medium i{ background:var(--amber); }
+.prio-low i{ background:var(--slate); }
+
+.badge{ font-size:10.5px; font-weight:600; padding:2px 8px; border-radius:999px; }
+.badge-danger{ background:var(--red-tint); color:var(--red-deep); }
+.badge-warn{ background:var(--amber-tint); color:var(--amber-deep); }
+.badge-stale{ background:var(--violet-tint); color:var(--violet-deep); }
+.badge-report{ background:var(--amber-tint); color:var(--amber-deep); }
+.card-updated{ font-size:10.5px; color:var(--ink-faint); }
+
+/* ---------- OVERLAY & PANEL ---------- */
+.overlay{
+  position:fixed; inset:0; background:rgba(28,33,43,0.25);
+  opacity:0; pointer-events:none; transition:opacity .18s ease; z-index:40;
+}
+.overlay.show{ opacity:1; pointer-events:auto; }
+
+.panel{
+  position:fixed; top:0; right:0; height:100%; width:440px; max-width:92vw;
+  background:var(--surface); box-shadow:var(--shadow-panel);
+  transform:translateX(100%); transition:transform .22s ease; z-index:50;
+  display:flex; flex-direction:column;
+}
+.panel{ box-shadow:none; }
+.panel.show{ transform:translateX(0); box-shadow:var(--shadow-panel); }
+.panel-head{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:16px 20px; border-bottom:1px solid var(--line);
+}
+.panel-head h2{ font-size:16px; }
+.panel-body{ padding:18px 20px 30px; overflow-y:auto; flex:1; }
+
+.field{ margin-bottom:15px; }
+.field label{
+  display:block; font-size:11px; font-weight:600; color:var(--ink-soft);
+  text-transform:uppercase; letter-spacing:.05em; margin-bottom:6px;
+}
+.field input[type="text"],
+.field input[type="date"],
+.field textarea,
+.field select{
+  width:100%; border:1px solid var(--line-strong); border-radius:8px;
+  padding:9px 11px; font-size:13.5px; color:var(--ink); background:#fff;
+}
+.field input::placeholder, .field textarea::placeholder{ color:var(--ink-faint); }
+.field textarea{ resize:vertical; min-height:64px; line-height:1.4; }
+.field-hint{ font-size:11.5px; color:var(--ink-faint); margin-top:5px; }
+
+/* chip input (PIC) */
+.chip-input{
+  display:flex; flex-wrap:wrap; align-items:center; gap:6px;
+  border:1px solid var(--line-strong); border-radius:8px; padding:5px 7px; background:#fff;
+}
+.chip-input:focus-within{ border-color:var(--cyan-deep); box-shadow:0 0 0 2px var(--cyan-tint); }
+.chips{ display:contents; }
+.chip{
+  display:inline-flex; align-items:center; gap:4px; background:var(--cyan-tint);
+  color:var(--ink); border-radius:999px; padding:3px 4px 3px 10px; font-size:12.5px; font-weight:500;
+}
+.chip-x{
+  border:none; background:transparent; color:var(--ink-soft); cursor:pointer;
+  width:18px; height:18px; border-radius:50%; font-size:10px; line-height:1;
+}
+.chip-x:hover{ background:rgba(28,33,43,0.1); color:var(--ink); }
+.field .chip-input input[type="text"]{
+  border:none; outline:none; width:auto; flex:1; min-width:130px; padding:5px 4px; background:transparent;
+}
+
+.status-switch{ display:flex; gap:6px; flex-wrap:wrap; }
+.status-switch button{
+  flex:1; min-width:100px; padding:8px 6px; border-radius:8px; border:1px solid var(--line-strong);
+  background:#fff; font-size:12px; font-weight:600; color:var(--ink-soft); cursor:pointer;
+}
+.status-switch button.active[data-s="todo"]{ background:var(--slate-tint); border-color:var(--slate); color:var(--ink); }
+.status-switch button.active[data-s="progress"]{ background:var(--cyan-tint); border-color:var(--cyan); color:var(--ink); }
+.status-switch button.active[data-s="done"]{ background:var(--emerald-tint); border-color:var(--emerald); color:var(--emerald-deep); }
+
+.report-box{
+  background:#F3FAF6; border:1px solid #CFEBDB; border-radius:10px;
+  padding:13px 14px 14px; margin-bottom:16px;
+}
+.report-head{
+  display:flex; align-items:center; gap:7px; font-size:11px; font-weight:700;
+  text-transform:uppercase; letter-spacing:.06em; color:var(--emerald-deep); margin-bottom:11px;
+}
+
+.panel-actions{ display:flex; gap:8px; margin-top:4px; }
+.btn-save{
+  flex:1; background:var(--ink); color:#fff; border:none; border-radius:8px;
+  padding:10px; font-size:13.5px; font-weight:600; cursor:pointer;
+}
+.btn-save:hover{ background:#000; }
+.btn-delete{
+  background:#fff; color:var(--violet-deep); border:1px solid #DDD5F3;
+  border-radius:8px; padding:10px 14px; font-size:13px; font-weight:600; cursor:pointer;
+}
+.btn-delete:hover{ background:var(--violet-tint); }
+
+.divider{ border:none; border-top:1px solid var(--line); margin:20px 0; }
+
+.notes-list{ display:flex; flex-direction:column; gap:8px; margin-bottom:12px; }
+.note-item{
+  background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:9px 11px;
+  font-size:12.5px; line-height:1.45;
+}
+.note-time{ display:block; color:var(--ink-faint); font-size:10.5px; margin-bottom:3px; }
+.note-empty{ color:var(--ink-faint); font-size:12px; }
+
+.add-note-row{ display:flex; gap:8px; }
+.add-note-row textarea{ flex:1; }
+.btn-note{
+  background:var(--surface); border:1px solid var(--line-strong); border-radius:8px;
+  padding:0 14px; font-size:12.5px; font-weight:600; color:var(--ink); cursor:pointer;
+}
+.btn-note:hover{ background:var(--slate-tint); }
+
+.toast{
+  position:fixed; bottom:22px; left:50%; transform:translateX(-50%) translateY(12px);
+  background:var(--ink); color:#fff; font-size:13px; padding:10px 18px;
+  border-radius:8px; opacity:0; pointer-events:none; transition:all .2s ease; z-index:60;
+}
+.toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* ---------- PEOPLE LIST ---------- */
+.people-list{ display:flex; flex-direction:column; gap:6px; margin-bottom:10px; }
+.people-item{
+  display:flex; align-items:center; justify-content:space-between;
+  background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:8px 10px; font-size:12.5px;
+}
+.people-item .pname{ font-weight:600; }
+.people-item .prole{ color:var(--ink-soft); font-size:11.5px; }
+.people-item .btn-remove{
+  background:none; border:none; color:var(--ink-faint); cursor:pointer; font-size:14px; padding:0 4px; line-height:1;
+}
+.people-item .btn-remove:hover{ color:var(--red-deep); }
+.people-empty{ color:var(--ink-faint); font-size:12px; margin-bottom:10px; }
+.add-person-row{ display:flex; gap:6px; margin-bottom:14px; }
+.add-person-row input{
+  border:1px solid var(--line-strong); border-radius:8px; padding:8px 10px; font-size:12.5px; background:#fff; color:var(--ink);
+}
+.add-person-row input.pname-input{ flex:1.3; min-width:0; }
+.add-person-row input.prole-input{ flex:1; min-width:0; }
+
+.note-tag{
+  display:inline-block; font-size:9.5px; font-weight:700; text-transform:uppercase;
+  letter-spacing:.04em; padding:1px 7px; border-radius:999px; margin-right:6px;
+}
+.note-tag.tag-note{ background:var(--slate-tint); color:var(--ink-soft); }
+.note-tag.tag-output{ background:var(--emerald-tint); color:var(--emerald-deep); }
+
+.latest-output-box{
+  background:var(--emerald-tint); border:1px solid #CFEBDB; border-radius:9px;
+  padding:9px 11px; font-size:12.5px; line-height:1.45; margin-bottom:10px;
+}
+.latest-output-box .lo-label{
+  display:block; font-size:10.5px; font-weight:700; text-transform:uppercase;
+  letter-spacing:.04em; color:var(--emerald-deep); margin-bottom:3px;
+}
+
+.note-type-switch{ display:flex; gap:6px; margin-bottom:8px; }
+.note-type-switch button{
+  padding:6px 12px; border-radius:999px; border:1px solid var(--line-strong);
+  background:#fff; font-size:11.5px; font-weight:600; color:var(--ink-soft); cursor:pointer;
+}
+.note-type-switch button.active[data-t="note"]{ background:var(--ink); border-color:var(--ink); color:#fff; }
+.note-type-switch button.active[data-t="output"]{ background:var(--emerald-deep); border-color:var(--emerald-deep); color:#fff; }
+
+/* ---------- ARCHIVE PANEL ---------- */
+.archive-section{ margin-bottom:22px; }
+.archive-section h3{ font-size:11.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft); margin-bottom:10px; }
+.archive-item{ background:var(--bg); border:1px solid var(--line); border-radius:9px; padding:11px 13px; margin-bottom:8px; }
+.archive-item .ai-title{ font-size:13px; font-weight:600; margin-bottom:3px; }
+.archive-item .ai-meta{ font-size:11px; color:var(--ink-faint); margin-bottom:9px; }
+.archive-item .ai-actions{ display:flex; gap:8px; }
+.archive-item .ai-actions button{
+  flex:1; border-radius:7px; padding:7px; font-size:11.5px; font-weight:600; cursor:pointer; border:1px solid var(--line-strong); background:#fff;
+}
+.btn-restore{ color:var(--cyan-deep); }
+.btn-restore:hover{ background:var(--cyan-tint); }
+.btn-purge{ color:var(--red-deep); }
+.btn-purge:hover{ background:var(--red-tint); }
+.archive-empty{
+  text-align:center; padding:30px 10px; color:var(--ink-faint); font-size:12.5px;
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+}
+.btn-empty-trash{
+  width:100%; background:transparent; border:1px dashed #E8A9A9; color:var(--red-deep);
+  border-radius:8px; padding:10px; font-size:12px; font-weight:600; cursor:pointer; margin-top:6px;
+}
+.btn-empty-trash:hover{ background:var(--red-tint); }
+
+.signal-quote{ text-align:center; font-size:11.5px; color:var(--ink-faint); margin-top:36px; }
+
+/* ---------- SYNC & GATE ---------- */
+.sync{
+  display:inline-flex; align-items:center; gap:7px; background:var(--surface);
+  border:1px solid var(--line); border-radius:999px; padding:7px 13px;
+  font-size:12.5px; color:var(--ink-soft); cursor:pointer;
+}
+.sync:hover{ background:var(--slate-tint); }
+.sync-dot{ width:8px; height:8px; border-radius:50%; background:var(--slate); display:inline-block; }
+.sync[data-state="ok"] .sync-dot{ background:var(--emerald); }
+.sync[data-state="syncing"] .sync-dot{ background:var(--cyan); }
+.sync[data-state="offline"] .sync-dot{ background:var(--red); }
+.sync[data-state="offline"]{ color:var(--red-deep); }
+#btnUser{ display:none; }
+#btnUser.show{ display:inline-flex; }
+
+.gate{
+  position:fixed; inset:0; z-index:100; background:var(--bg);
+  display:none; align-items:center; justify-content:center; padding:20px;
+}
+.gate.show{ display:flex; }
+.gate-card{
+  width:100%; max-width:400px; background:var(--surface); border:1px solid var(--line);
+  border-radius:14px; padding:26px 24px 22px;
+}
+.gate-card h2{ font-size:18px; margin:12px 0 6px; }
+.gate-card p{ margin:0 0 18px; font-size:13px; color:var(--ink-soft); line-height:1.5; }
+.gate-card .field input[type="password"]{
+  width:100%; border:1px solid var(--line-strong); border-radius:8px;
+  padding:9px 11px; font-size:13.5px; color:var(--ink); background:#fff;
+}
+.gate-error{ color:var(--red-deep); font-size:12.5px; margin:0 0 12px !important; min-height:1em; }
+.gate-card .btn-save{ width:100%; }
+.gate-card .btn-save:disabled{ opacity:.6; cursor:wait; }
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 780px){
+  .board{ grid-template-columns:1fr; }
+  .panel{ width:100%; max-width:100%; }
+  .topbar-right{ width:100%; justify-content:space-between; }
+  .by{ margin-left:0; }
+}
+</style>
+</head>
+<body>
+
+<svg class="bg-rings" viewBox="0 0 620 620" fill="none" aria-hidden="true">
+  <circle cx="310" cy="310" r="110" stroke="#38D9FF" stroke-opacity="0.30"/>
+  <circle cx="310" cy="310" r="190" stroke="#38D9FF" stroke-opacity="0.22"/>
+  <circle cx="310" cy="310" r="270" stroke="#38D9FF" stroke-opacity="0.15"/>
+  <circle cx="310" cy="310" r="3.5" fill="#38D9FF" fill-opacity="0.55"/>
+  <path d="M310 310L310 40" stroke="#38D9FF" stroke-opacity="0.22"/>
+</svg>
+
+<div class="page">
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="16" cy="16" r="2.6" fill="#0A7896"/>
+          <circle cx="16" cy="16" r="8" stroke="#0A7896" stroke-width="1.4" opacity="0.6"/>
+          <circle cx="16" cy="16" r="13" stroke="#38D9FF" stroke-width="1.2" opacity="0.7"/>
+        </svg>
+      </span>
+      <div>
+        <h1>ECHO</h1>
+        <p class="tagline">Strategic Operations Intelligence</p>
+        <p class="greeting" id="greetingLine"></p>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <button class="sync" id="syncChip" data-state="idle" title="Click to sync now"><i class="sync-dot"></i><span id="syncText">Not connected</span></button>
+      <button class="sync" id="btnUser" title="Sign out of this browser"><span id="userName"></span></button>
+      <div class="readout">
+        <span id="todayDate" class="num"></span>
+        <span class="sep">·</span>
+        <span id="urgentCount" title="Urgent tasks across all projects and dates">0 urgent</span>
+      </div>
+      <button class="icon-btn" id="btnArchive" title="Open Archive">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M3 7h18M5 7l1 13a2 2 0 002 2h8a2 2 0 002-2l1-13M9 11h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+      <button class="icon-btn" id="btnExport" title="Download JSON backup">⬇</button>
+      <button class="icon-btn" id="btnImport" title="Load from JSON backup">⬆</button>
+      <input type="file" id="fileImport" accept="application/json" style="display:none">
+      <button class="btn-primary" id="btnNewTask">+ New Task</button>
+    </div>
+  </header>
+
+  <div class="project-tabs" id="projectTabs"></div>
+
+  <section class="filterbar" aria-label="Date range filter">
+    <div class="seg" role="group" aria-label="Range">
+      <button type="button" data-mode="all">All</button>
+      <button type="button" data-mode="day">Day</button>
+      <button type="button" data-mode="week">Week</button>
+      <button type="button" data-mode="month">Month</button>
+    </div>
+    <div class="range-nav" id="rangeNav">
+      <button type="button" class="rn-btn" id="rangePrev" aria-label="Previous period">‹</button>
+      <span class="range-label num" id="rangeLabel"></span>
+      <button type="button" class="rn-btn" id="rangeNext" aria-label="Next period">›</button>
+      <button type="button" class="today-btn" id="rangeToday">Today</button>
+    </div>
+    <label class="by" id="basisWrap">Filter by
+      <select id="basisSelect">
+        <option value="deadline">Deadline</option>
+        <option value="created">Date created</option>
+        <option value="updated">Last updated</option>
+      </select>
+    </label>
+  </section>
+  <p class="filter-hint" id="filterHint" style="display:none"></p>
+
+  <div class="legend">
+    <span class="legend-item"><i class="dot dot-danger"></i>Past deadline</span>
+    <span class="legend-item"><i class="dot dot-warn"></i>Deadline ≤ 2 days</span>
+    <span class="legend-item"><i class="dot dot-stale"></i>Not updated in 3+ days</span>
+  </div>
+
+  <main class="board">
+    <section class="column" data-status="todo">
+      <div class="column-head">
+        <h2><i class="col-dot"></i>Awaiting Deployment</h2>
+        <span class="count" id="count-todo">0</span>
+      </div>
+      <div class="column-body" id="col-todo"></div>
+    </section>
+    <section class="column" data-status="progress">
+      <div class="column-head">
+        <h2><i class="col-dot"></i>Executing</h2>
+        <span class="count" id="count-progress">0</span>
+      </div>
+      <div class="column-body" id="col-progress"></div>
+    </section>
+    <section class="column" data-status="done">
+      <div class="column-head">
+        <h2><i class="col-dot"></i>Mission Complete</h2>
+        <span class="count" id="count-done">0</span>
+      </div>
+      <div class="column-body" id="col-done"></div>
+    </section>
+  </main>
+
+  <p class="signal-quote">Every action leaves a signal.</p>
+</div>
+
+<div class="gate" id="gate">
+  <form class="gate-card" id="gateForm" autocomplete="off">
+    <span class="brand-mark">
+      <svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="2.6" fill="#0A7896"/><circle cx="16" cy="16" r="8" stroke="#0A7896" stroke-width="1.4" opacity="0.6"/><circle cx="16" cy="16" r="13" stroke="#38D9FF" stroke-width="1.2" opacity="0.7"/></svg>
+    </span>
+    <h2>Connect to the team board</h2>
+    <p>Enter the team passphrase and your name. Your name is shown on every change you make.</p>
+    <div class="field" id="gateUrlWrap">
+      <label for="g-url">Web App URL</label>
+      <input type="text" id="g-url" placeholder="https://script.google.com/macros/s/.../exec">
+    </div>
+    <div class="field">
+      <label for="g-key">Team passphrase</label>
+      <input type="password" id="g-key">
+    </div>
+    <div class="field">
+      <label for="g-name">Your name</label>
+      <input type="text" id="g-name" placeholder="e.g. John">
+    </div>
+    <p class="gate-error" id="gateError" role="alert"></p>
+    <button class="btn-save" type="submit" id="gateBtn">Connect</button>
+  </form>
+</div>
+
+<div class="overlay" id="overlay"></div>
+<aside class="panel" id="panel">
+  <div class="panel-head">
+    <h2 id="panelTitleText">New Task</h2>
+    <button class="icon-btn" id="btnClosePanel" aria-label="Close panel">✕</button>
+  </div>
+  <div class="panel-body" id="panelBody"></div>
+</aside>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const ICON = {
+  cal:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
+  doc:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/></svg>',
+  docLg:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/></svg>'
+};
+
+const EMPTY_SVG = `<svg width="52" height="52" viewBox="0 0 64 64" fill="none">
+  <circle cx="32" cy="32" r="22" stroke="#38D9FF" stroke-width="1.2" opacity="0.5"/>
+  <circle cx="32" cy="32" r="13" stroke="#38D9FF" stroke-width="1.2" opacity="0.7"/>
+  <circle cx="32" cy="32" r="2.6" fill="#0A7896"/>
+</svg>`;
+const ARCHIVE_EMPTY_SVG = `<svg width="54" height="54" viewBox="0 0 64 64" fill="none">
+  <rect x="10" y="18" width="44" height="30" rx="4" stroke="#6B52C4" stroke-width="1.4" opacity="0.5"/>
+  <path d="M10 24H54" stroke="#6B52C4" stroke-width="1.4" opacity="0.5"/>
+  <path d="M26 32H38" stroke="#6B52C4" stroke-width="1.4" stroke-linecap="round" opacity="0.5"/>
+</svg>`;
+
+// Optional: paste your Apps Script Web App URL here so teammates never have to type it.
+// (The URL is not a password. The team passphrase is what protects the data, and it is NOT stored in this file.)
+const SCRIPT_URL = '';
+
+const CACHE_KEY = 'echo-team-cache';
+const OUTBOX_KEY = 'echo-team-outbox';
+const CFG_KEY = 'echo-team-cfg';
+const LEGACY_KEY = 'echo-ops-data';
+const MIGRATED_KEY = 'echo-team-migrated';
+const POLL_MS = 30000;
+const PREF_KEY = 'echo-ui-prefs';
+const STATUSES = ['todo','progress','done'];
+const LEGACY_STATUS = { playing:'progress', repeat:'progress', paused:'todo', released:'done' };
+
+let state = { tasks: [], projects: [], activeProject: 'all', loaded: false };
+let view = { mode: 'all', basis: 'deadline', anchor: startOfDay(new Date()) };
+let activeTaskId = null;
+let getPics = null;
+
+const $ = (sel, ctx=document) => ctx.querySelector(sel);
+const $$ = (sel, ctx=document) => Array.from(ctx.querySelectorAll(sel));
+
+/* ---------- HELPERS ---------- */
+function uid(){ return 't_' + Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+function startOfDay(d){ const x = new Date(d); x.setHours(0,0,0,0); return x; }
+function daysBetween(a,b){ return Math.round((startOfDay(b) - startOfDay(a)) / 86400000); }
+function pad(n){ return String(n).padStart(2,'0'); }
+function dateKey(d){ return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; }
+function parseKey(k){ const [y,m,d] = k.split('-').map(Number); return new Date(y, m-1, d); }
+// Accepts 'YYYY-MM-DD' or an ISO timestamp; returns a local 'YYYY-MM-DD' key.
+function toKey(v){
+  if(!v) return null;
+  if(/^\d{4}-\d{2}-\d{2}$/.test(v)) return v;
+  const d = new Date(v);
+  return isNaN(d) ? null : dateKey(d);
+}
+function toDate(v){ const k = toKey(v); return k ? parseKey(k) : null; }
+
+function escapeHtml(str){
+  return String(str ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function fmtDate(v){
+  const d = toDate(v);
+  return d ? d.toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' }) : '';
+}
+function fmtDateTime(iso){
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) +
+    ', ' + d.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+}
+function relativeUpdated(iso){
+  const days = daysBetween(new Date(iso), new Date());
+  if(days<=0) return 'Updated: today';
+  if(days===1) return 'Updated: 1 day ago';
+  return `Updated: ${days} days ago`;
+}
+
+function showToast(msg){
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=> t.classList.remove('show'), 2600);
+}
+
+/* ---------- DATA ---------- */
+function ensureDefaultProject(){
+  if(state.projects.length === 0){
+    state.projects.push({ id: 'p_general', name: 'General', createdAt: new Date().toISOString(), deletedAt: null, updatedBy: '' });
+  }
+  return state.projects[0].id;
+}
+
+function normalizeTask(t, fallbackProjectId){
+  const notes = (Array.isArray(t.notes) ? t.notes : []).map(n => ({
+    id: n.id || uid(),
+    text: n.text || '',
+    ts: n.ts || new Date().toISOString(),
+    type: n.type === 'output' ? 'output' : 'note'
+  }));
+  if(t.output && String(t.output).trim()){
+    notes.push({ id: uid(), text: String(t.output).trim(), ts: t.lastUpdatedAt || new Date().toISOString(), type: 'output' });
+  }
+  let status = t.status || 'todo';
+  if(LEGACY_STATUS[status]) status = LEGACY_STATUS[status];
+  if(!STATUSES.includes(status)) status = 'todo';
+  const pic = [];
+  (Array.isArray(t.pic) ? t.pic : []).forEach(n => {
+    const name = String(n).trim();
+    if(name && !pic.some(p => p.toLowerCase() === name.toLowerCase())) pic.push(name);
+  });
+  return {
+    id: t.id || uid(),
+    title: t.title || '',
+    givenBy: t.givenBy || '',
+    context: t.context || '',
+    deliverable: t.deliverable || '',
+    deadline: t.deadline || null,
+    priority: t.priority || 'medium',
+    status,
+    pic,
+    reportHolder: t.reportHolder || '',
+    reportNote: t.reportNote || '',
+    notes,
+    people: Array.isArray(t.people) ? t.people : [],
+    projectId: t.projectId || fallbackProjectId,
+    createdAt: t.createdAt || new Date().toISOString(),
+    lastUpdatedAt: t.lastUpdatedAt || new Date().toISOString(),
+    deletedAt: t.deletedAt || null,
+    cascadeProjectId: t.cascadeProjectId || null,
+    updatedBy: t.updatedBy || ''
+  };
+}
+
+function normalizeProject(p){
+  return {
+    id: p.id || uid(),
+    name: p.name || 'General',
+    createdAt: p.createdAt || new Date().toISOString(),
+    deletedAt: p.deletedAt || null,
+    updatedBy: p.updatedBy || ''
+  };
+}
+
+/* ---------- TEAM SYNC LAYER ---------- */
+let cfg = { url:'', key:'', name:'', connected:false };
+let outbox = [];
+let baseT = new Map(), baseP = new Map();
+let localVersion = 0, flushing = false, pulling = false, lastSync = null, syncState = 'idle';
+let pollTimer = null;
+
+function stable(v){
+  if(Array.isArray(v)) return '[' + v.map(stable).join(',') + ']';
+  if(v && typeof v === 'object') return '{' + Object.keys(v).sort().map(k => JSON.stringify(k) + ':' + stable(v[k])).join(',') + '}';
+  return JSON.stringify(v === undefined ? null : v);
+}
+function readJSON(key, fb){ try{ const r = window.localStorage.getItem(key); return r ? JSON.parse(r) : fb; }catch(e){ return fb; } }
+function writeJSON(key, val){ try{ window.localStorage.setItem(key, JSON.stringify(val)); }catch(e){} }
+
+function loadCfg(){
+  const c = readJSON(CFG_KEY, null) || {};
+  cfg.url = SCRIPT_URL || c.url || '';
+  cfg.key = c.key || '';
+  cfg.name = c.name || '';
+}
+function cfgComplete(){ return !!(cfg.url && cfg.key && cfg.name); }
+
+function writeCache(){ writeJSON(CACHE_KEY, { tasks: state.tasks, projects: state.projects }); }
+function persistOutbox(){ writeJSON(OUTBOX_KEY, outbox); }
+function resetBaseline(){
+  baseT = new Map(state.tasks.map(t => [t.id, stable(t)]));
+  baseP = new Map(state.projects.map(p => [p.id, stable(p)]));
+}
+function loadCache(){
+  const c = readJSON(CACHE_KEY, null);
+  if(c){
+    state.projects = (c.projects || []).map(normalizeProject);
+    state.tasks = (c.tasks || []).map(t => normalizeTask(t, 'p_general'));
+  }
+  outbox = readJSON(OUTBOX_KEY, []);
+  resetBaseline();
+}
+
+async function api(action, extra){
+  const body = JSON.stringify(Object.assign({ key: cfg.key, action }, extra || {}));
+  // text/plain keeps this a "simple" request, so the browser sends no CORS preflight (Apps Script cannot answer one).
+  const res = await fetch(cfg.url, { method:'POST', headers:{ 'Content-Type':'text/plain;charset=utf-8' }, body, redirect:'follow' });
+  const txt = await res.text();
+  try{ return JSON.parse(txt); }catch(e){ throw new Error('bad_response'); }
+}
+
+function setSync(s){ syncState = s; renderSync(); }
+function renderSync(){
+  const chip = $('#syncChip'), txt = $('#syncText');
+  if(!chip) return;
+  chip.dataset.state = syncState;
+  const q = outbox.length;
+  if(syncState === 'syncing') txt.textContent = 'Syncing…';
+  else if(syncState === 'offline') txt.textContent = q ? `Offline · ${q} queued` : 'Offline';
+  else if(syncState === 'ok') txt.textContent = 'Synced ' + (lastSync ? lastSync.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' }) : '');
+  else txt.textContent = 'Not connected';
+}
+
+function enqueue(op){
+  const kind = op.t.replace(/^(upsert|delete)/, '');
+  outbox = outbox.filter(o => !(o.id === op.id && o.t.replace(/^(upsert|delete)/, '') === kind));
+  outbox.push(op);
+}
+
+// Compares the current state with the last queued state and queues only what changed.
+function queueDiff(){
+  const seenT = new Set(), seenP = new Set();
+  state.tasks.forEach(t => {
+    seenT.add(t.id);
+    if(baseT.get(t.id) !== stable(t)){
+      t.updatedBy = cfg.name;
+      baseT.set(t.id, stable(t));
+      enqueue({ t:'upsertTask', id:t.id, task: JSON.parse(JSON.stringify(t)) });
+    }
+  });
+  Array.from(baseT.keys()).forEach(id => {
+    if(!seenT.has(id)){ baseT.delete(id); enqueue({ t:'deleteTask', id }); }
+  });
+  state.projects.forEach(p => {
+    seenP.add(p.id);
+    if(baseP.get(p.id) !== stable(p)){
+      p.updatedBy = cfg.name;
+      baseP.set(p.id, stable(p));
+      enqueue({ t:'upsertProject', id:p.id, project: JSON.parse(JSON.stringify(p)) });
+    }
+  });
+  Array.from(baseP.keys()).forEach(id => {
+    if(!seenP.has(id)){ baseP.delete(id); enqueue({ t:'deleteProject', id }); }
+  });
+  persistOutbox();
+}
+
+async function saveTasks(){
+  localVersion++;
+  if(cfg.connected) queueDiff();
+  writeCache();
+  renderSync();
+  if(cfg.connected) flush();
+}
+
+async function flush(){
+  if(flushing || !outbox.length || !cfgComplete()) return true;
+  flushing = true;
+  setSync('syncing');
+  let ok = false;
+  try{
+    const sent = outbox.slice();
+    const r = await api('batch', { ops: sent });
+    if(!r.ok){
+      if(r.error === 'unauthorized') handleUnauthorized();
+      throw new Error(r.error || 'failed');
+    }
+    outbox = outbox.filter(o => !sent.includes(o));
+    persistOutbox();
+    ok = true;
+    lastSync = new Date();
+    setSync('ok');
+  }catch(e){
+    setSync('offline');
+  }finally{
+    flushing = false;
+  }
+  if(ok && outbox.length) return flush();
+  return ok;
+}
+
+function applyRemote(r){
+  const byId = (a, b) => a.id < b.id ? -1 : 1;
+  const tasks = (r.tasks || []).map(t => normalizeTask(t, 'p_general'));
+  const projects = (r.projects || []).map(normalizeProject);
+  const incoming = stable(tasks.slice().sort(byId)) + stable(projects.slice().sort(byId));
+  const current = stable(state.tasks.slice().sort(byId)) + stable(state.projects.slice().sort(byId));
+  const changed = incoming !== current;
+  if(changed){ state.tasks = tasks; state.projects = projects; }
+  resetBaseline();
+  if(state.projects.length === 0 && state.tasks.length === 0){
+    if(!maybeMigrate()) ensureDefaultProject();
+    saveTasks();
+    refresh();
+    return;
+  }
+  if(state.projects.length === 0){ ensureDefaultProject(); saveTasks(); }
+  if(changed){ writeCache(); refresh(); }
+}
+
+function maybeMigrate(){
+  if(window.localStorage.getItem(MIGRATED_KEY)) return false;
+  const legacy = readJSON(LEGACY_KEY, null);
+  const n = legacy && Array.isArray(legacy.tasks) ? legacy.tasks.length : 0;
+  try{ window.localStorage.setItem(MIGRATED_KEY, '1'); }catch(e){}
+  if(!n) return false;
+  if(!confirm(`The shared board is empty, but this browser holds ${n} task(s) from the single-user ECHO. Upload them to the shared board?`)) return false;
+  state.projects = (legacy.projects || []).map(normalizeProject);
+  const fb = ensureDefaultProject();
+  state.tasks = legacy.tasks.map(t => normalizeTask(t, fb));
+  return true;
+}
+
+async function pull(){
+  if(pulling || flushing || outbox.length) return;
+  pulling = true;
+  const v = localVersion;
+  setSync('syncing');
+  try{
+    const r = await api('list');
+    if(!r.ok){
+      if(r.error === 'unauthorized') handleUnauthorized();
+      throw new Error(r.error || 'failed');
+    }
+    if(v === localVersion && !outbox.length && !flushing) applyRemote(r);
+    lastSync = new Date();
+    setSync('ok');
+  }catch(e){
+    setSync('offline');
+  }finally{
+    pulling = false;
+  }
+}
+
+async function syncNow(){
+  if(!cfg.connected) return;
+  await flush();
+  await pull();
+}
+
+function tick(){
+  if(!cfg.connected || document.hidden) return;
+  syncNow();
+}
+function startPolling(){
+  if(pollTimer) clearInterval(pollTimer);
+  pollTimer = setInterval(tick, POLL_MS);
+}
+
+/* ---------- LOGIN GATE ---------- */
+function showGate(msg){
+  $('#gate').classList.add('show');
+  $('#gateUrlWrap').style.display = SCRIPT_URL ? 'none' : 'block';
+  $('#g-url').value = cfg.url || '';
+  $('#g-name').value = cfg.name || '';
+  $('#g-key').value = '';
+  $('#gateError').textContent = msg || '';
+  $('#btnUser').classList.remove('show');
+  setSync('idle');
+}
+function hideGate(){
+  $('#gate').classList.remove('show');
+  $('#userName').textContent = cfg.name;
+  $('#btnUser').classList.add('show');
+  updateGreeting();
+}
+function handleUnauthorized(){
+  cfg.connected = false;
+  cfg.key = '';
+  writeJSON(CFG_KEY, { url: cfg.url, key: '', name: cfg.name });
+  if(pollTimer) clearInterval(pollTimer);
+  closePanel();
+  showGate('The passphrase was rejected. Please enter it again.');
+}
+function signOut(){
+  if(outbox.length && !confirm(`${outbox.length} change(s) have not been synced yet and will be lost. Sign out anyway?`)) return;
+  if(!outbox.length && !confirm('Sign out of this browser?')) return;
+  cfg.connected = false;
+  cfg.key = '';
+  outbox = [];
+  state.tasks = []; state.projects = [];
+  try{ window.localStorage.removeItem(CACHE_KEY); window.localStorage.removeItem(OUTBOX_KEY); }catch(e){}
+  writeJSON(CFG_KEY, { url: cfg.url, key: '', name: cfg.name });
+  if(pollTimer) clearInterval(pollTimer);
+  closePanel();
+  refresh();
+  showGate('');
+}
+
+async function submitGate(e){
+  e.preventDefault();
+  const url = SCRIPT_URL || $('#g-url').value.trim();
+  const key = $('#g-key').value;
+  const name = $('#g-name').value.trim();
+  if(!url || !key || !name){ $('#gateError').textContent = 'Please fill in every field.'; return; }
+  if(!/^https:\/\/script\.google\.com\//.test(url) && !SCRIPT_URL){
+    $('#gateError').textContent = 'That does not look like an Apps Script Web App URL (it should start with https://script.google.com/).';
+    return;
+  }
+  const btn = $('#gateBtn');
+  btn.disabled = true; btn.textContent = 'Connecting…';
+  $('#gateError').textContent = '';
+  const prev = Object.assign({}, cfg);
+  cfg.url = url; cfg.key = key; cfg.name = name;
+  try{
+    const r = await api('list');
+    if(!r.ok) throw new Error(r.error || 'failed');
+    writeJSON(CFG_KEY, { url, key, name });
+    loadCache();
+    cfg.connected = true;
+    hideGate();
+    applyRemote(r);
+    lastSync = new Date();
+    setSync('ok');
+    refresh();
+    startPolling();
+  }catch(err){
+    Object.assign(cfg, prev);
+    $('#gateError').textContent = err.message === 'unauthorized' ? 'Wrong passphrase.'
+      : (err.message === 'bad_response' || err.name === 'TypeError')
+        ? 'Could not reach the web app. Check the URL, and that access is set to "Anyone".'
+        : 'Connection failed (' + err.message + ').';
+  }finally{
+    btn.disabled = false; btn.textContent = 'Connect';
+  }
+}
+
+function loadPrefs(){
+  try{
+    const p = JSON.parse(window.localStorage.getItem(PREF_KEY) || 'null');
+    if(p && ['all','day','week','month'].includes(p.mode)) view.mode = p.mode;
+    if(p && ['deadline','created','updated'].includes(p.basis)) view.basis = p.basis;
+  }catch(e){}
+}
+function savePrefs(){
+  try{ window.localStorage.setItem(PREF_KEY, JSON.stringify({ mode: view.mode, basis: view.basis })); }catch(e){}
+}
+
+function exportBackup(){
+  const payload = { tasks: state.tasks, projects: state.projects };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type:'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const stamp = new Date().toISOString().slice(0,10);
+  a.href = url;
+  a.download = `echo-ops-backup-${stamp}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Backup downloaded');
+}
+
+function importBackup(file){
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    try{
+      const parsed = JSON.parse(e.target.result);
+      if(!parsed || !Array.isArray(parsed.tasks)) throw new Error('invalid format');
+      const tasksIn = parsed.tasks, projIn = Array.isArray(parsed.projects) ? parsed.projects : [];
+      if(!confirm(`Merge ${tasksIn.length} task(s) and ${projIn.length} project(s) into the shared board? Items with the same ID are overwritten. Nothing is deleted.`)) return;
+      projIn.map(normalizeProject).forEach(p => {
+        const i = state.projects.findIndex(x => x.id === p.id);
+        if(i >= 0) state.projects[i] = p; else state.projects.push(p);
+      });
+      const fb = ensureDefaultProject();
+      tasksIn.map(t => normalizeTask(t, fb)).forEach(t => {
+        const i = state.tasks.findIndex(x => x.id === t.id);
+        if(i >= 0) state.tasks[i] = t; else state.tasks.push(t);
+      });
+      await saveTasks();
+      refresh();
+      showToast('Backup merged into the board');
+    }catch(err){
+      showToast('Could not read backup file');
+    }
+  };
+  reader.readAsText(file);
+}
+
+/* ---------- URGENCY & SORT ---------- */
+function getUrgency(task){
+  if(task.status === 'done') return { level:'none', label:'' };
+  const today = new Date();
+  const dl = toDate(task.deadline);
+  if(dl){
+    const diff = daysBetween(today, dl);
+    if(diff < 0) return { level:'danger', label:`${Math.abs(diff)}d overdue` };
+    if(diff <= 2) return { level:'warn', label: diff===0 ? 'Due today' : `Due in ${diff}d` };
+  }
+  const staleDays = daysBetween(new Date(task.lastUpdatedAt), today);
+  if(staleDays >= 3) return { level:'stale', label:`Not updated in ${staleDays}d` };
+  return { level:'normal', label:'' };
+}
+
+const LEVEL_WEIGHT = { danger:0, warn:1, stale:2, normal:3, none:4 };
+const PRIORITY_WEIGHT = { high:0, medium:1, low:2 };
+const PRIORITY_LABEL = { high:'High', medium:'Medium', low:'Low' };
+
+function sortTasks(tasks){
+  return tasks.slice().sort((a,b)=>{
+    const ua = getUrgency(a), ub = getUrgency(b);
+    if(LEVEL_WEIGHT[ua.level] !== LEVEL_WEIGHT[ub.level]) return LEVEL_WEIGHT[ua.level]-LEVEL_WEIGHT[ub.level];
+    if(PRIORITY_WEIGHT[a.priority] !== PRIORITY_WEIGHT[b.priority]) return PRIORITY_WEIGHT[a.priority]-PRIORITY_WEIGHT[b.priority];
+    const da = a.deadline ? parseKey(toKey(a.deadline)).getTime() : Infinity;
+    const db = b.deadline ? parseKey(toKey(b.deadline)).getTime() : Infinity;
+    return da - db;
+  });
+}
+
+function activeProjects(){ return state.projects.filter(p=>!p.deletedAt); }
+function activeTasks(){ return state.tasks.filter(t=>!t.deletedAt); }
+function projectName(id){
+  const p = state.projects.find(p=>p.id===id);
+  return p ? p.name : 'General';
+}
+
+/* ---------- DATE RANGE FILTER ---------- */
+function getRange(){
+  if(view.mode === 'all') return null;
+  const a = new Date(view.anchor);
+  if(view.mode === 'day') return { start: dateKey(a), end: dateKey(a) };
+  if(view.mode === 'week'){
+    const dow = (a.getDay() + 6) % 7; // Monday = 0
+    const s = new Date(a.getFullYear(), a.getMonth(), a.getDate() - dow);
+    const e = new Date(s.getFullYear(), s.getMonth(), s.getDate() + 6);
+    return { start: dateKey(s), end: dateKey(e) };
+  }
+  const s = new Date(a.getFullYear(), a.getMonth(), 1);
+  const e = new Date(a.getFullYear(), a.getMonth() + 1, 0);
+  return { start: dateKey(s), end: dateKey(e) };
+}
+
+function shiftRange(dir){
+  const a = new Date(view.anchor);
+  if(view.mode === 'day') view.anchor = new Date(a.getFullYear(), a.getMonth(), a.getDate() + dir);
+  else if(view.mode === 'week') view.anchor = new Date(a.getFullYear(), a.getMonth(), a.getDate() + 7*dir);
+  else if(view.mode === 'month') view.anchor = new Date(a.getFullYear(), a.getMonth() + dir, 1);
+}
+
+function rangeLabel(){
+  const r = getRange();
+  if(!r) return '';
+  const s = parseKey(r.start), e = parseKey(r.end);
+  if(view.mode === 'day'){
+    return s.toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short', year:'numeric' });
+  }
+  if(view.mode === 'month'){
+    return s.toLocaleDateString('en-GB', { month:'long', year:'numeric' });
+  }
+  const sameYear = s.getFullYear() === e.getFullYear();
+  const sameMonth = sameYear && s.getMonth() === e.getMonth();
+  if(sameMonth) return `${s.getDate()} – ${e.toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' })}`;
+  if(sameYear) return `${s.toLocaleDateString('en-GB', { day:'numeric', month:'short' })} – ${e.toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' })}`;
+  return `${fmtDate(r.start)} – ${fmtDate(r.end)}`;
+}
+
+function taskKey(task){
+  if(view.basis === 'created') return toKey(task.createdAt);
+  if(view.basis === 'updated') return toKey(task.lastUpdatedAt);
+  return toKey(task.deadline);
+}
+function inRange(task){
+  const r = getRange();
+  if(!r) return true;
+  const k = taskKey(task);
+  return !!k && k >= r.start && k <= r.end;
+}
+function scopeTasks(){
+  const live = activeTasks();
+  return state.activeProject === 'all' ? live : live.filter(t => t.projectId === state.activeProject);
+}
+
+/* ---------- PIC HELPERS ---------- */
+const AVATAR_BG = ['#DDF4FA','#DFF5E8','#FBF0D2','#FBE1E1','#E8E2F8','#E6EBF0'];
+function initials(name){
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if(!parts.length) return '?';
+  const first = Array.from(parts[0])[0];
+  const last = parts.length > 1 ? Array.from(parts[parts.length-1])[0] : '';
+  return (first + last).toUpperCase();
+}
+function avatarBg(name){
+  let h = 0;
+  for(const ch of name.toLowerCase()) h = (h*31 + ch.charCodeAt(0)) >>> 0;
+  return AVATAR_BG[h % AVATAR_BG.length];
+}
+function picHtml(pics){
+  if(!pics || !pics.length) return `<span class="muted">No PIC</span>`;
+  const av = pics.slice(0,3).map(n =>
+    `<span class="avatar" style="background:${avatarBg(n)}" title="${escapeHtml(n)}">${escapeHtml(initials(n))}</span>`).join('');
+  const names = pics.slice(0,2).map(escapeHtml).join(', ') + (pics.length > 2 ? ` +${pics.length-2}` : '');
+  return `<span class="avatars">${av}</span><span class="pic-names">${names}</span>`;
+}
+
+function knownNames(){
+  const map = new Map();
+  state.tasks.forEach(t => {
+    (t.pic || []).forEach(n => map.set(n.toLowerCase(), n));
+    (t.people || []).forEach(p => { if(p.name) map.set(p.name.toLowerCase(), p.name); });
+    if(t.reportHolder) map.set(t.reportHolder.toLowerCase(), t.reportHolder);
+  });
+  return Array.from(map.values()).sort((a,b) => a.localeCompare(b));
+}
+function namesDatalist(){
+  return `<datalist id="dl-names">${knownNames().map(n => `<option value="${escapeHtml(n)}"></option>`).join('')}</datalist>`;
+}
+
+// Chip input for multiple PICs. Returns a getter that also commits any half-typed name.
+function initPicInput(initial){
+  const pics = (initial || []).slice();
+  const chipsEl = $('#picChips');
+  const input = $('#picText');
+  function render(){
+    chipsEl.innerHTML = pics.map((p,i) =>
+      `<span class="chip">${escapeHtml(p)}<button type="button" class="chip-x" data-i="${i}" aria-label="Remove ${escapeHtml(p)}">✕</button></span>`).join('');
+    $$('.chip-x', chipsEl).forEach(b => b.addEventListener('click', () => {
+      pics.splice(Number(b.dataset.i), 1);
+      render();
+      input.focus();
+    }));
+  }
+  function commit(){
+    const parts = input.value.split(',').map(s => s.trim()).filter(Boolean);
+    parts.forEach(name => {
+      if(!pics.some(p => p.toLowerCase() === name.toLowerCase())) pics.push(name);
+    });
+    input.value = '';
+    if(parts.length) render();
+  }
+  input.addEventListener('keydown', e => {
+    if(e.key === 'Enter' || e.key === ','){ e.preventDefault(); commit(); }
+    else if(e.key === 'Backspace' && !input.value && pics.length){ pics.pop(); render(); }
+  });
+  input.addEventListener('blur', commit);
+  input.addEventListener('change', commit);
+  render();
+  return () => { commit(); return pics.slice(); };
+}
+
+function picFieldHtml(){
+  return `
+    <div class="field">
+      <label>PIC (Person in Charge)</label>
+      <div class="chip-input">
+        <span class="chips" id="picChips"></span>
+        <input type="text" id="picText" list="dl-names" placeholder="Type a name, press Enter" autocomplete="off">
+      </div>
+      <div class="field-hint">You can add more than one. Press Enter or comma after each name.</div>
+    </div>`;
+}
+
+/* ---------- RENDER ---------- */
+function refresh(){
+  renderProjectTabs();
+  renderFilter();
+  renderBoard();
+}
+
+function renderProjectTabs(){
+  const wrap = $('#projectTabs');
+  const liveTasks = activeTasks().filter(inRange);
+  const liveProjects = activeProjects();
+  if(state.activeProject !== 'all' && !liveProjects.find(p=>p.id===state.activeProject)){
+    state.activeProject = 'all';
+  }
+  const tabs = [{ id:'all', name:'All Projects', count: liveTasks.length }].concat(
+    liveProjects.map(p => ({ id:p.id, name:p.name, count: liveTasks.filter(t=>t.projectId===p.id).length }))
+  );
+  wrap.innerHTML = tabs.map(t => `
+    <button class="project-tab ${state.activeProject===t.id?'active':''}" data-pid="${t.id}">
+      ${escapeHtml(t.name)}<span class="ptab-count">${t.count}</span>${t.id!=='all' ? `<span class="ptab-x" data-archive-project="${t.id}" title="Archive this project">✕</span>` : ''}
+    </button>
+  `).join('');
+  $$('.project-tab', wrap).forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      if(e.target.closest('[data-archive-project]')) return;
+      state.activeProject = btn.dataset.pid;
+      refresh();
+    });
+  });
+  $$('[data-archive-project]', wrap).forEach(x=>{
+    x.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      archiveProject(x.dataset.archiveProject);
+    });
+  });
+  const archiveCount = state.tasks.filter(t=>t.deletedAt).length + state.projects.filter(p=>p.deletedAt).length;
+  const btnArchive = $('#btnArchive');
+  if(archiveCount>0){
+    btnArchive.setAttribute('data-count', archiveCount);
+    btnArchive.classList.add('has-archive');
+  } else {
+    btnArchive.classList.remove('has-archive');
+  }
+}
+
+function renderFilter(){
+  $$('.seg button').forEach(b => b.classList.toggle('active', b.dataset.mode === view.mode));
+  const filtering = view.mode !== 'all';
+  $('#rangeNav').style.display = filtering ? 'inline-flex' : 'none';
+  $('#basisWrap').style.display = filtering ? 'flex' : 'none';
+  $('#basisSelect').value = view.basis;
+  const hint = $('#filterHint');
+  if(!filtering){ hint.style.display = 'none'; hint.innerHTML = ''; return; }
+  $('#rangeLabel').textContent = rangeLabel();
+
+  const todayKeyStr = dateKey(new Date());
+  let noDate = 0, overdueOutside = 0;
+  scopeTasks().forEach(t => {
+    if(!taskKey(t)) noDate++;
+    if(t.status !== 'done' && t.deadline && toKey(t.deadline) < todayKeyStr && !inRange(t)) overdueOutside++;
+  });
+  const parts = [];
+  if(noDate) parts.push(`${noDate} task${noDate>1?'s':''} without a date`);
+  if(overdueOutside) parts.push(`${overdueOutside} overdue task${overdueOutside>1?'s':''} outside this range`);
+  if(parts.length){
+    hint.style.display = 'block';
+    hint.innerHTML = `Not shown: ${parts.join(' · ')}. <button type="button" class="link-btn" id="hintShowAll">Show all</button>`;
+    $('#hintShowAll').addEventListener('click', () => { view.mode = 'all'; savePrefs(); refresh(); });
+  } else {
+    hint.style.display = 'none';
+    hint.innerHTML = '';
+  }
+}
+
+function cardHtml(task, u){
+  const showReport = task.status === 'done';
+  const holderLine = showReport
+    ? (task.reportHolder
+        ? `<div class="card-row report" title="${escapeHtml(task.reportNote || '')}">${ICON.doc}<span class="rep-text">Report held by <strong>${escapeHtml(task.reportHolder)}</strong></span></div>`
+        : '')
+    : '';
+  return `
+    ${state.activeProject==='all' ? `<div class="card-project">${escapeHtml(projectName(task.projectId))}</div>` : ''}
+    <div class="card-title">${escapeHtml(task.title)}</div>
+    <div class="card-row">${picHtml(task.pic)}</div>
+    ${task.givenBy ? `<div class="card-row"><span class="pic-names">Given by ${escapeHtml(task.givenBy)}</span></div>` : ''}
+    ${task.deadline ? `<div class="card-row num">${ICON.cal}<span>${fmtDate(task.deadline)}</span></div>` : ''}
+    ${holderLine}
+    <div class="card-footer">
+      <span class="prio prio-${task.priority}"><i></i>${PRIORITY_LABEL[task.priority]}</span>
+      ${u.label ? `<span class="badge badge-${u.level}">${u.label}</span>` : ''}
+      ${showReport && !task.reportHolder ? `<span class="badge badge-report">Report holder not set</span>` : ''}
+    </div>
+    <div class="card-updated">${relativeUpdated(task.lastUpdatedAt)}${task.updatedBy ? ' · ' + escapeHtml(task.updatedBy) : ''}</div>
+  `;
+}
+
+function renderBoard(){
+  const visibleTasks = scopeTasks().filter(inRange);
+  const groups = { todo:[], progress:[], done:[] };
+  visibleTasks.forEach(t => groups[t.status]?.push(t));
+
+  ['todo','progress','done'].forEach(status=>{
+    const list = sortTasks(groups[status]);
+    const body = $(`#col-${status}`);
+    body.innerHTML = '';
+    $(`#count-${status}`).textContent = list.length;
+
+    if(list.length === 0){
+      const msg = view.mode !== 'all'
+        ? 'Nothing in this range.'
+        : (status==='todo' ? 'No tasks yet. Click "+ New Task" to start.' : 'No tasks here yet.');
+      const hint = document.createElement('div');
+      hint.className = 'empty-hint';
+      hint.innerHTML = `${EMPTY_SVG}<span>${msg}</span>`;
+      body.appendChild(hint);
+      return;
+    }
+
+    list.forEach(task=>{
+      const u = getUrgency(task);
+      const card = document.createElement('div');
+      card.className = `card level-${u.level}`;
+      card.dataset.id = task.id;
+      card.dataset.priority = task.priority;
+      card.innerHTML = cardHtml(task, u);
+      card.addEventListener('click', ()=> openDetailPanel(task.id));
+      body.appendChild(card);
+    });
+  });
+
+  // Urgent alert is global on purpose, so a date filter can never hide it.
+  let urgentTotal = 0;
+  activeTasks().forEach(t => {
+    const lv = getUrgency(t).level;
+    if(lv==='danger' || lv==='warn' || lv==='stale') urgentTotal++;
+  });
+  const uc = $('#urgentCount');
+  uc.textContent = urgentTotal === 0 ? 'All clear' : `${urgentTotal} urgent`;
+  uc.classList.toggle('has-urgent', urgentTotal > 0);
+}
+
+/* ---------- PANEL: NEW TASK ---------- */
+function openNewTaskForm(){
+  activeTaskId = null;
+  $('#panelTitleText').textContent = 'New Task';
+  const projectOptions = activeProjects().map(p =>
+    `<option value="${p.id}" ${state.activeProject===p.id?'selected':''}>${escapeHtml(p.name)}</option>`
+  ).join('');
+
+  $('#panelBody').innerHTML = `
+    ${namesDatalist()}
+    <div class="field">
+      <label>Project *</label>
+      <select id="f-project">
+        ${projectOptions}
+        <option value="__new__">+ Create new project...</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Task Name *</label>
+      <input type="text" id="f-title" placeholder="e.g. Prepare the weekly report">
+    </div>
+    <div class="field">
+      <label>Given By *</label>
+      <input type="text" id="f-givenBy" placeholder="e.g. your manager / Marketing Team">
+    </div>
+    ${picFieldHtml()}
+    <div class="field">
+      <label>Expected Deliverable</label>
+      <textarea id="f-deliverable" placeholder="What this task should produce"></textarea>
+    </div>
+    <div class="field">
+      <label>Context</label>
+      <textarea id="f-context" placeholder="Brief details, purpose, or instructions for this task"></textarea>
+    </div>
+    <div class="field">
+      <label>Deadline</label>
+      <input type="date" id="f-deadline">
+    </div>
+    <div class="field">
+      <label>Priority</label>
+      <select id="f-priority">
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+        <option value="low">Low</option>
+      </select>
+    </div>
+    <div class="panel-actions">
+      <button class="btn-save" id="btnCreateTask">Save Task</button>
+    </div>
+  `;
+  getPics = initPicInput([]);
+  $('#f-project').addEventListener('change', (e)=>{
+    if(e.target.value === '__new__') handleNewProjectSelection(e.target);
+  });
+  $('#btnCreateTask').addEventListener('click', createTask);
+  showPanel();
+  setTimeout(()=> $('#f-title')?.focus(), 200);
+}
+
+function handleNewProjectSelection(selectEl){
+  const name = prompt('New project name:');
+  if(!name || !name.trim()){
+    selectEl.value = activeProjects()[0]?.id || '';
+    return;
+  }
+  const proj = { id: uid(), name: name.trim(), createdAt: new Date().toISOString(), deletedAt: null };
+  state.projects.push(proj);
+  const opt = document.createElement('option');
+  opt.value = proj.id;
+  opt.textContent = proj.name;
+  selectEl.insertBefore(opt, selectEl.lastElementChild);
+  selectEl.value = proj.id;
+}
+
+async function createTask(){
+  const title = $('#f-title').value.trim();
+  const givenBy = $('#f-givenBy').value.trim();
+  const projectId = $('#f-project').value;
+  if(!title || !givenBy){
+    showToast('Task name and "Given By" are required');
+    return;
+  }
+  if(!projectId || projectId === '__new__'){
+    showToast('Please select or create a project first');
+    return;
+  }
+  const now = new Date().toISOString();
+  state.tasks.push({
+    id: uid(),
+    title,
+    givenBy,
+    projectId,
+    pic: getPics ? getPics() : [],
+    reportHolder: '',
+    reportNote: '',
+    deliverable: $('#f-deliverable').value.trim(),
+    context: $('#f-context').value.trim(),
+    deadline: $('#f-deadline').value || null,
+    priority: $('#f-priority').value,
+    status: 'todo',
+    notes: [],
+    people: [],
+    createdAt: now,
+    lastUpdatedAt: now,
+    deletedAt: null,
+    cascadeProjectId: null
+  });
+  await saveTasks();
+  refresh();
+  closePanel();
+  showToast('New task added');
+}
+
+/* ---------- PANEL: DETAIL ---------- */
+function openDetailPanel(id){
+  const task = state.tasks.find(t=>t.id===id);
+  if(!task) return;
+  activeTaskId = id;
+  $('#panelTitleText').textContent = 'Task Details';
+
+  const notesSorted = task.notes.slice().sort((a,b)=> new Date(b.ts) - new Date(a.ts));
+  const notesHtml = notesSorted.length
+    ? notesSorted.map(n => `
+        <div class="note-item">
+          <span class="note-tag ${n.type==='output' ? 'tag-output' : 'tag-note'}">${n.type==='output' ? 'Output' : 'Note'}</span>
+          <span class="note-time num">${fmtDateTime(n.ts)}</span>
+          ${escapeHtml(n.text)}
+        </div>`).join('')
+    : `<div class="note-empty">No entries yet.</div>`;
+
+  const latestOutput = notesSorted.find(n => n.type === 'output');
+  const latestOutputHtml = latestOutput
+    ? `<div class="latest-output-box"><span class="lo-label">Latest Output · ${fmtDateTime(latestOutput.ts)}</span>${escapeHtml(latestOutput.text)}</div>`
+    : '';
+
+  const peopleHtml = task.people.length
+    ? task.people.map(p => `
+        <div class="people-item" data-pid="${p.id}">
+          <div><span class="pname">${escapeHtml(p.name)}</span> — <span class="prole">${escapeHtml(p.role)}</span></div>
+          <button class="btn-remove" data-remove-person="${p.id}" title="Remove">✕</button>
+        </div>`).join('')
+    : `<div class="people-empty">No people added yet.</div>`;
+
+  const projectOptions = activeProjects().map(p =>
+    `<option value="${p.id}" ${task.projectId===p.id?'selected':''}>${escapeHtml(p.name)}</option>`
+  ).join('');
+
+  const reportHtml = task.status === 'done' ? `
+    <div class="report-box">
+      <div class="report-head">${ICON.docLg}Report Document</div>
+      <div class="field">
+        <label>Held by</label>
+        <input type="text" id="f-reportHolder" list="dl-names" value="${escapeHtml(task.reportHolder)}" placeholder="Who currently holds the report document?" autocomplete="off">
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label>Details</label>
+        <input type="text" id="f-reportNote" value="${escapeHtml(task.reportNote)}" placeholder="File name, folder, or link (optional)" autocomplete="off">
+      </div>
+    </div>` : '';
+
+  $('#panelBody').innerHTML = `
+    ${namesDatalist()}
+    <div class="field">
+      <label>Status</label>
+      <div class="status-switch">
+        <button data-s="todo" class="${task.status==='todo'?'active':''}">Awaiting</button>
+        <button data-s="progress" class="${task.status==='progress'?'active':''}">Executing</button>
+        <button data-s="done" class="${task.status==='done'?'active':''}">Complete</button>
+      </div>
+    </div>
+    ${reportHtml}
+    <div class="field">
+      <label>Project *</label>
+      <select id="f-project">
+        ${projectOptions}
+        <option value="__new__">+ Create new project...</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Task Name *</label>
+      <input type="text" id="f-title" value="${escapeHtml(task.title)}">
+    </div>
+    <div class="field">
+      <label>Given By *</label>
+      <input type="text" id="f-givenBy" value="${escapeHtml(task.givenBy)}">
+    </div>
+    ${picFieldHtml()}
+    <div class="field">
+      <label>Expected Deliverable</label>
+      <textarea id="f-deliverable" placeholder="What this task should produce">${escapeHtml(task.deliverable)}</textarea>
+    </div>
+    <div class="field">
+      <label>Context</label>
+      <textarea id="f-context">${escapeHtml(task.context)}</textarea>
+    </div>
+    <div class="field">
+      <label>Deadline</label>
+      <input type="date" id="f-deadline" value="${escapeHtml(task.deadline || '')}">
+    </div>
+    <div class="field">
+      <label>Priority</label>
+      <select id="f-priority">
+        <option value="high" ${task.priority==='high'?'selected':''}>High</option>
+        <option value="medium" ${task.priority==='medium'?'selected':''}>Medium</option>
+        <option value="low" ${task.priority==='low'?'selected':''}>Low</option>
+      </select>
+    </div>
+    <div class="panel-actions">
+      <button class="btn-save" id="btnSaveTask">Save Changes</button>
+      <button class="btn-delete" id="btnDeleteTask">Archive</button>
+    </div>
+
+    <hr class="divider">
+
+    <div class="field">
+      <label>People Involved</label>
+      <div class="people-list">${peopleHtml}</div>
+      <div class="add-person-row">
+        <input type="text" id="f-personName" class="pname-input" placeholder="Name">
+        <input type="text" id="f-personRole" class="prole-input" placeholder="Role (e.g. reviewer)">
+        <button class="btn-note" id="btnAddPerson">Add</button>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="field">
+      <label>Notes &amp; Output <span class="num" style="text-transform:none;font-weight:400;color:var(--ink-faint);">— ${relativeUpdated(task.lastUpdatedAt)}${task.updatedBy ? ' by ' + escapeHtml(task.updatedBy) : ''}</span></label>
+      ${latestOutputHtml}
+      <div class="notes-list">${notesHtml}</div>
+      <div class="note-type-switch">
+        <button type="button" data-t="note" class="active">Note</button>
+        <button type="button" data-t="output">Output</button>
+      </div>
+      <div class="add-note-row">
+        <textarea id="f-newNote" rows="2" placeholder="Write a progress update, or switch to 'Output' and log the latest result..."></textarea>
+        <button class="btn-note" id="btnAddNote">Add</button>
+      </div>
+    </div>
+  `;
+
+  getPics = initPicInput(task.pic);
+
+  let selectedNoteType = 'note';
+  $$('.note-type-switch button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      selectedNoteType = btn.dataset.t;
+      $$('.note-type-switch button').forEach(b=> b.classList.toggle('active', b===btn));
+    });
+  });
+
+  $('#f-project').addEventListener('change', (e)=>{
+    if(e.target.value === '__new__') handleNewProjectSelection(e.target);
+  });
+  $$('.status-switch button').forEach(btn=>{
+    btn.addEventListener('click', ()=> quickChangeStatus(task.id, btn.dataset.s));
+  });
+  $('#btnSaveTask').addEventListener('click', ()=> saveTaskEdits(task.id));
+  $('#btnDeleteTask').addEventListener('click', ()=> archiveTask(task.id));
+  $('#btnAddNote').addEventListener('click', ()=> addNote(task.id, selectedNoteType));
+  $('#btnAddPerson').addEventListener('click', ()=> addPerson(task.id));
+  $$('[data-remove-person]').forEach(btn=>{
+    btn.addEventListener('click', ()=> removePerson(task.id, btn.dataset.removePerson));
+  });
+
+  showPanel();
+}
+
+// Copies whatever is currently typed in the open form onto the task, so that
+// re-rendering the panel (status change, add note, ...) never loses unsaved edits.
+function captureForm(task){
+  if(!$('#f-title')) return;
+  const title = $('#f-title').value.trim();
+  const givenBy = $('#f-givenBy').value.trim();
+  if(title) task.title = title;
+  if(givenBy) task.givenBy = givenBy;
+  const pid = $('#f-project').value;
+  if(pid && pid !== '__new__') task.projectId = pid;
+  task.deliverable = $('#f-deliverable').value.trim();
+  task.context = $('#f-context').value.trim();
+  task.deadline = $('#f-deadline').value || null;
+  task.priority = $('#f-priority').value;
+  if(getPics) task.pic = getPics();
+  const rh = $('#f-reportHolder');
+  if(rh){
+    task.reportHolder = rh.value.trim();
+    task.reportNote = $('#f-reportNote').value.trim();
+  }
+}
+
+async function quickChangeStatus(id, newStatus){
+  const task = state.tasks.find(t=>t.id===id);
+  if(!task || task.status===newStatus) return;
+  captureForm(task);
+  task.status = newStatus;
+  task.lastUpdatedAt = new Date().toISOString();
+  await saveTasks();
+  refresh();
+  openDetailPanel(id);
+  showToast(newStatus === 'done' ? 'Marked complete. Add who holds the report.' : 'Status updated');
+}
+
+async function saveTaskEdits(id){
+  const task = state.tasks.find(t=>t.id===id);
+  if(!task) return;
+  const title = $('#f-title').value.trim();
+  const givenBy = $('#f-givenBy').value.trim();
+  const projectId = $('#f-project').value;
+  if(!title || !givenBy){
+    showToast('Task name and "Given By" are required');
+    return;
+  }
+  if(!projectId || projectId === '__new__'){
+    showToast('Please select or create a project first');
+    return;
+  }
+  captureForm(task);
+  task.lastUpdatedAt = new Date().toISOString();
+  await saveTasks();
+  refresh();
+  closePanel();
+  showToast('Changes saved');
+}
+
+async function addPerson(id){
+  const task = state.tasks.find(t=>t.id===id);
+  if(!task) return;
+  const name = $('#f-personName').value.trim();
+  const role = $('#f-personRole').value.trim();
+  if(!name){
+    showToast('Please enter a name');
+    return;
+  }
+  captureForm(task);
+  task.people.push({ id: uid(), name, role: role || '—' });
+  task.lastUpdatedAt = new Date().toISOString();
+  await saveTasks();
+  refresh();
+  openDetailPanel(id);
+  showToast('Person added');
+}
+
+async function removePerson(id, personId){
+  const task = state.tasks.find(t=>t.id===id);
+  if(!task) return;
+  captureForm(task);
+  task.people = task.people.filter(p=>p.id!==personId);
+  task.lastUpdatedAt = new Date().toISOString();
+  await saveTasks();
+  refresh();
+  openDetailPanel(id);
+  showToast('Person removed');
+}
+
+async function addNote(id, type){
+  const task = state.tasks.find(t=>t.id===id);
+  if(!task) return;
+  const text = $('#f-newNote').value.trim();
+  if(!text) return;
+  captureForm(task);
+  task.notes.push({ id: uid(), text, ts: new Date().toISOString(), type: type==='output' ? 'output' : 'note' });
+  task.lastUpdatedAt = new Date().toISOString();
+  await saveTasks();
+  refresh();
+  openDetailPanel(id);
+  showToast(type==='output' ? 'Output added' : 'Note added');
+}
+
+/* ---------- ARCHIVE / SOFT DELETE ---------- */
+async function archiveTask(id){
+  const task = state.tasks.find(t=>t.id===id);
+  if(!task) return;
+  if(!confirm('Archive this task? You can still restore it from the Archive.')) return;
+  task.deletedAt = new Date().toISOString();
+  task.cascadeProjectId = null;
+  await saveTasks();
+  refresh();
+  closePanel();
+  showToast('Task archived');
+}
+
+async function restoreTask(id){
+  const task = state.tasks.find(t=>t.id===id);
+  if(!task) return;
+  task.deletedAt = null;
+  task.cascadeProjectId = null;
+  await saveTasks();
+  refresh();
+  openArchivePanel();
+  showToast('Task restored');
+}
+
+async function purgeTask(id){
+  if(!confirm('Permanently delete this task? This cannot be undone.')) return;
+  state.tasks = state.tasks.filter(t=>t.id!==id);
+  await saveTasks();
+  refresh();
+  openArchivePanel();
+  showToast('Task permanently deleted');
+}
+
+async function archiveProject(id){
+  const proj = state.projects.find(p=>p.id===id);
+  if(!proj) return;
+  if(!confirm(`Archive the project "${proj.name}" along with all its tasks? You can still restore it from the Archive.`)) return;
+  proj.deletedAt = new Date().toISOString();
+  state.tasks.forEach(t=>{
+    if(t.projectId===id && !t.deletedAt){
+      t.deletedAt = proj.deletedAt;
+      t.cascadeProjectId = id;
+    }
+  });
+  if(state.activeProject === id) state.activeProject = 'all';
+  await saveTasks();
+  refresh();
+  showToast('Project archived');
+}
+
+async function restoreProject(id){
+  const proj = state.projects.find(p=>p.id===id);
+  if(!proj) return;
+  proj.deletedAt = null;
+  state.tasks.forEach(t=>{
+    if(t.cascadeProjectId===id){
+      t.deletedAt = null;
+      t.cascadeProjectId = null;
+    }
+  });
+  await saveTasks();
+  refresh();
+  openArchivePanel();
+  showToast('Project restored');
+}
+
+async function purgeProject(id){
+  if(!confirm('Permanently delete this project along with all its tasks? This cannot be undone.')) return;
+  state.projects = state.projects.filter(p=>p.id!==id);
+  state.tasks = state.tasks.filter(t=>t.projectId!==id);
+  await saveTasks();
+  refresh();
+  openArchivePanel();
+  showToast('Project permanently deleted');
+}
+
+async function emptyArchive(){
+  const deletedTasks = state.tasks.filter(t=>t.deletedAt).length;
+  const deletedProjects = state.projects.filter(p=>p.deletedAt).length;
+  if(deletedTasks + deletedProjects === 0) return;
+  if(!confirm('Empty the entire archive? All archived tasks and projects will be permanently deleted.')) return;
+  const purgedProjectIds = state.projects.filter(p=>p.deletedAt).map(p=>p.id);
+  state.projects = state.projects.filter(p=>!p.deletedAt);
+  state.tasks = state.tasks.filter(t=> !t.deletedAt && !purgedProjectIds.includes(t.projectId));
+  await saveTasks();
+  refresh();
+  openArchivePanel();
+  showToast('Archive emptied');
+}
+
+function openArchivePanel(){
+  activeTaskId = null;
+  getPics = null;
+  $('#panelTitleText').textContent = 'Archive';
+
+  const deletedProjects = state.projects.filter(p=>p.deletedAt).sort((a,b)=> new Date(b.deletedAt)-new Date(a.deletedAt));
+  const deletedTasks = state.tasks.filter(t=>t.deletedAt && !t.cascadeProjectId).sort((a,b)=> new Date(b.deletedAt)-new Date(a.deletedAt));
+
+  if(deletedProjects.length===0 && deletedTasks.length===0){
+    $('#panelBody').innerHTML = `<div class="archive-empty">${ARCHIVE_EMPTY_SVG}<span>The archive is empty. Nothing has been archived yet.</span></div>`;
+    showPanel();
+    return;
+  }
+
+  const projectsHtml = deletedProjects.map(p=>{
+    const cascadeCount = state.tasks.filter(t=>t.cascadeProjectId===p.id).length;
+    return `
+      <div class="archive-item" data-project-id="${p.id}">
+        <div class="ai-title">${escapeHtml(p.name)}</div>
+        <div class="ai-meta">Project · ${cascadeCount} task(s) archived with it · archived ${fmtDateTime(p.deletedAt)}${p.updatedBy ? ' by ' + escapeHtml(p.updatedBy) : ''}</div>
+        <div class="ai-actions">
+          <button class="btn-restore" data-restore-project="${p.id}">Restore</button>
+          <button class="btn-purge" data-purge-project="${p.id}">Delete Permanently</button>
+        </div>
+      </div>`;
+  }).join('');
+
+  const tasksHtml = deletedTasks.map(t=>`
+    <div class="archive-item" data-task-id="${t.id}">
+      <div class="ai-title">${escapeHtml(t.title)}</div>
+      <div class="ai-meta">${escapeHtml(projectName(t.projectId))} · archived ${fmtDateTime(t.deletedAt)}${t.updatedBy ? ' by ' + escapeHtml(t.updatedBy) : ''}</div>
+      <div class="ai-actions">
+        <button class="btn-restore" data-restore-task="${t.id}">Restore</button>
+        <button class="btn-purge" data-purge-task="${t.id}">Delete Permanently</button>
+      </div>
+    </div>`).join('');
+
+  $('#panelBody').innerHTML = `
+    ${deletedProjects.length ? `<div class="archive-section"><h3>Archived Projects</h3>${projectsHtml}</div>` : ''}
+    ${deletedTasks.length ? `<div class="archive-section"><h3>Archived Tasks</h3>${tasksHtml}</div>` : ''}
+    <button class="btn-empty-trash" id="btnEmptyArchive">Empty Archive</button>
+  `;
+
+  $$('[data-restore-task]').forEach(b=> b.addEventListener('click', ()=> restoreTask(b.dataset.restoreTask)));
+  $$('[data-purge-task]').forEach(b=> b.addEventListener('click', ()=> purgeTask(b.dataset.purgeTask)));
+  $$('[data-restore-project]').forEach(b=> b.addEventListener('click', ()=> restoreProject(b.dataset.restoreProject)));
+  $$('[data-purge-project]').forEach(b=> b.addEventListener('click', ()=> purgeProject(b.dataset.purgeProject)));
+  $('#btnEmptyArchive').addEventListener('click', emptyArchive);
+
+  showPanel();
+}
+
+/* ---------- PANEL SHOW/HIDE ---------- */
+function showPanel(){
+  $('#overlay').classList.add('show');
+  $('#panel').classList.add('show');
+}
+function closePanel(){
+  $('#overlay').classList.remove('show');
+  $('#panel').classList.remove('show');
+  activeTaskId = null;
+  getPics = null;
+}
+
+/* ---------- WIRING ---------- */
+$('#btnExport').addEventListener('click', exportBackup);
+$('#btnImport').addEventListener('click', ()=> $('#fileImport').click());
+$('#fileImport').addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if(file) importBackup(file);
+  e.target.value = '';
+});
+$('#btnNewTask').addEventListener('click', openNewTaskForm);
+$('#syncChip').addEventListener('click', () => { if(cfg.connected) syncNow(); else showGate(''); });
+$('#btnUser').addEventListener('click', signOut);
+$('#gateForm').addEventListener('submit', submitGate);
+document.addEventListener('visibilitychange', tick);
+$('#btnArchive').addEventListener('click', openArchivePanel);
+$('#btnClosePanel').addEventListener('click', closePanel);
+$('#overlay').addEventListener('click', closePanel);
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closePanel(); });
+
+$$('.seg button').forEach(b => b.addEventListener('click', () => {
+  view.mode = b.dataset.mode;
+  view.anchor = startOfDay(new Date());
+  savePrefs();
+  refresh();
+}));
+$('#rangePrev').addEventListener('click', () => { shiftRange(-1); refresh(); });
+$('#rangeNext').addEventListener('click', () => { shiftRange(1); refresh(); });
+$('#rangeToday').addEventListener('click', () => { view.anchor = startOfDay(new Date()); refresh(); });
+$('#basisSelect').addEventListener('change', (e) => { view.basis = e.target.value; savePrefs(); refresh(); });
+
+/* ---------- INIT ---------- */
+function updateReadoutDate(){
+  $('#todayDate').textContent = new Date().toLocaleDateString('en-GB', {
+    weekday:'long', day:'numeric', month:'long', year:'numeric'
+  });
+}
+function updateGreeting(){
+  const h = new Date().getHours();
+  const who = cfg.name ? cfg.name.split(/\s+/)[0] : 'Sir';
+  let msg;
+  if(h>=5 && h<12) msg = `Good morning, ${who}. Systems are online.`;
+  else if(h>=12 && h<18) msg = `Good afternoon, ${who}. All operations are synchronized.`;
+  else msg = `Welcome back, ${who}. Here's today's operational summary.`;
+  $('#greetingLine').textContent = msg;
+}
+
+async function init(){
+  updateReadoutDate();
+  loadPrefs();
+  loadCfg();
+  updateGreeting();
+  if(cfgComplete()){
+    loadCache();
+    cfg.connected = true;
+    $('#userName').textContent = cfg.name;
+    $('#btnUser').classList.add('show');
+    refresh();
+    startPolling();
+    await syncNow();
+  } else {
+    refresh();
+    showGate('');
+  }
+  setInterval(refresh, 60000);
+}
+init();
+</script>
+</body>
+</html>
